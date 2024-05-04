@@ -3,7 +3,7 @@ package main
 func main() {
 	var server HttpServer
 	var db Database
-	db.Connex() // Initialisation de la connexion à la base de données
+	db.Connex()
 	var page PageController
 	page.db = &db
 	server.SetRoute("/", page.Home)
