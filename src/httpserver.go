@@ -16,14 +16,17 @@ type HttpServer struct {
 func (h *HttpServer) StartServer(port int) {
 	h.Port = port
 	fmt.Printf("Serveur démarrer sur le port %v\n", port)
-	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	if err != nil {
+		log.Fatalf("Erreur lors du démarrage du serveur: %v", err)
+	}
 }
 
 func (h *HttpServer) ServerDetails(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s<br>", displayData(h.parseFormData(r)))
 	fmt.Fprintf(w, "Méthode : %v<br>", h.GetMethod(r))
 	fmt.Fprintf(w, "URL : %v<br>", h.GetURL(r))
-	fmt.Fprintf(w, "PORT : %v<br>", h.GetPort(r))
+	// fmt.Fprintf(w, "PORT : %v<br>", h.GetPort(r))
 	fmt.Fprintf(w, "HOST : %v<br>", h.GetHost(r))
 	fmt.Fprintf(w, "Protocol : %v<br>", h.GetProtocol(r))
 	h.Logs(r)
@@ -41,11 +44,11 @@ func displayData(postData map[string][]string) string {
 }
 
 func (h *HttpServer) parseFormData(r *http.Request) map[string][]string {
-	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		return nil
 	}
 	if err := r.ParseForm(); err != nil {
-		log.Println("Erreur lors de l'analyse du formulaire:", err)
+		log.Printf("Erreur lors de l'analyse du formulaire: %v", err)
 		return nil
 	}
 	return r.Form
