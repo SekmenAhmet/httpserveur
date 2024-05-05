@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"httpserveur/pkg/config"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -28,8 +29,7 @@ func NewDatabase() *Database {
 }
 
 func (d *Database) Connex() error {
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", d.User, d.Password, d.Host, d.Port, d.Dbname)
-	db, err := sql.Open("mysql", dataSourceName)
+	db, err := sql.Open("mysql", config.DbConnect)
 	if err != nil {
 		log.Fatalf("Échec de la connexion à la base de données: %v", err)
 	}
