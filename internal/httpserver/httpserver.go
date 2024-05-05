@@ -1,4 +1,4 @@
-package main
+package httpserver
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func (h *HttpServer) StartServer(port int) {
 }
 
 func (h *HttpServer) ServerDetails(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "%s<br>", displayData(h.parseFormData(r)))
+	fmt.Fprintf(w, "%s<br>", displayData(h.ParseFormData(r)))
 	fmt.Fprintf(w, "Méthode : %v<br>", h.GetMethod(r))
 	fmt.Fprintf(w, "URL : %v<br>", h.GetURL(r))
 	// fmt.Fprintf(w, "PORT : %v<br>", h.GetPort(r))
@@ -43,7 +43,7 @@ func displayData(postData map[string][]string) string {
 	return result
 }
 
-func (h *HttpServer) parseFormData(r *http.Request) map[string][]string {
+func (h *HttpServer) ParseFormData(r *http.Request) map[string][]string {
 	if r.Method != http.MethodPost {
 		return nil
 	}

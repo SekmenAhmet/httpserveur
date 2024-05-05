@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -10,15 +10,31 @@ import (
 
 type Database struct {
 	Connexion *sql.DB
+	Host      string
+	Port      string
+	User      string
+	Password  string
+	Dbname    string
+}
+
+func NewDatabase() *Database {
+	return &Database{
+		Host:     "localhost",
+		Port:     "3306",
+		User:     "root",
+		Password: "",
+		Dbname:   "golang",
+	}
 }
 
 func (d *Database) Connex() error {
-	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/golang")
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", d.User, d.Password, d.Host, d.Port, d.Dbname)
+	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
-		return fmt.Errorf("échec de la connexion à la base de données: %v", err)
+		log.Fatalf("Échec de la connexion à la base de données: %v", err)
 	}
 	if err = db.Ping(); err != nil {
-		return fmt.Errorf("échec lors de la tentative de connexion à la base de données: %v", err)
+		log.Fatalf("Échec lors de la tentative de connexion à la base de données: %v", err)
 	}
 	fmt.Println("Connecté à la base de données !")
 	d.Connexion = db
